@@ -32,9 +32,117 @@ inline unsigned char PIXEL(const unsigned char* p, int i, int j, int c, int widt
 
 void InitNodeBuf(Node* nodes, const unsigned char* img, int imgWidth, int imgHeight)
 {
-printf("TODO: %s:%d\n", __FILE__, __LINE__); 
-
+	assignCoordinates(nodes, imgWidth, imgHeight);
+	computeDerivatives(nodes, img, imgWidth, imgHeight);
+	double maxD = getMaxD(nodes, imgWidth, imgHeight);
+	computeCost(nodes, imgWidth, imgHeight, maxD);
 }
+
+
+/*
+ *assignCoordinates
+ *	INPUT:
+ *		nodes:	a allocated buffer of Nodes of the same size, one node corresponds to a pixel in img. the linkCosts in
+ *		        each of the nodes is the magnitude of the derivative in each of the 8 directions at that pixel.
+ *		img:	a RGB image of size imgWidth by imgHeight;
+ *  OUPUT:
+ *      returns the buffer of Nodes with row and column values assigned for each Node.
+ */
+
+void assignCoordinates (Node* nodes, int imgWidth, int imgHeight) {
+	for (int x = 0; x < imgWidth; ++x) {
+		for (int y = 0; y < imgHeight; ++y) {
+			int nodeIndex = y*imgWidth+x;
+			nodes[nodeIndex].column = x;
+			nodes[nodeIndex].row = y;
+		}
+	}
+}
+
+
+/*
+ *computeDerivatives
+ *	INPUT:
+ *		nodes:	a allocated buffer of Nodes of the same size, one node corresponds to a pixel in img. the linkCosts in
+ *		        each of the nodes is the magnitude of the derivative in each of the 8 directions at that pixel.
+ *		img:	a RGB image of size imgWidth by imgHeight;
+ *  OUPUT:
+ *      returns the buffer of Nodes with the derivatives in each of the 8 directions stored in linkCost for each Node.
+ */
+
+void computeDerivatives (Node* nodes, const unsigned char* img, int imgWidth, int imgHeight) {
+	int kernelWidth = 3;
+	int kernelHeight = 3;
+	double scale = 0.0000;
+	double offset = 0.0000;
+	const unsigned char* selection = NULL;
+	for (int linkIndex = 0; linkIndex < 8; ++linkIndex) {
+		double* rsltImg = new double[3*imgHeight*imgWidth];
+		image_filter(rsltImg, img, selection, imgWidth, imgHeight, kernels[linkIndex], kernelWidth, kernelHeight, scale, offset);
+		for (int x = 0; x < imgWidth; ++x) {
+			for (int y = 0; y < imgHeight; ++y) {
+				int nodeIndex = y*imgWidth+x;
+				nodes[nodeIndex].linkCost[linkIndex] = (pow(rsltImg[3*(y*imgWidth+x)], 2.0000) + pow(rsltImg[3*(y*imgWidth+x)+1], 2.0000) + 
+					                                   pow(rsltImg[3*(y*imgWidth+x)+2], 2.0000))/3;
+			}
+		}
+		delete[] rsltImg;
+	}
+}
+
+
+/*
+ *getMaxD
+ *	INPUT:
+ *		nodes:	a allocated buffer of Nodes of the same size, one node corresponds to a pixel in img. the linkCosts in
+ *		        each of the nodes is the magnitude of the derivative in each of the 8 directions at that pixel.
+ *		img:	a RGB image of size imgWidth by imgHeight;
+ *  OUPUT:
+ *      returns the maximum derivative magnitude.
+ */
+
+double getMaxD (Node* nodes, int imgWidth, int imgHeight) {
+	double maxD = 0.0000;
+	for (int x = 0; x < imgWidth; ++x) {
+		for (int y = 0; y < imgHeight; ++y) {
+			int nodeIndex = y*imgWidth+x;
+			for (int linkIndex = 0; linkIndex < 8; ++linkIndex) {
+				if (nodes[nodeIndex].linkCost[linkIndex] > maxD) {
+					maxD = nodes[nodeIndex].linkCost[linkIndex];
+				}
+			}
+		}
+	}
+	return maxD;
+}
+
+
+/*
+ *computeCost
+ *	INPUT:
+ *		nodes:	a allocated buffer of Nodes of the same size, one node corresponds to a pixel in img. the linkCosts in
+ *		        each of the nodes is the magnitude of the derivative in each of the 8 directions at that pixel.
+ *		img:	a RGB image of size imgWidth by imgHeight;
+ *		maxD:	the maximum derivative magnitude among all of the node links.
+ *  OUPUT:
+ *      returns the buffer of Nodes with the correct linkCost values.
+ */
+
+void computeCost (Node* nodes, int imgWidth, int imgHeight, double maxD) {
+	for (int x = 0; x < imgWidth; ++x) {
+		for (int y = 0; y < imgHeight; ++y) {
+			int nodeIndex = y*imgWidth+x;
+			for (int linkIndex = 0; linkIndex < 8; ++linkIndex) {
+				double length = 1.0000;
+				if (linkIndex%2 == 1) {
+					length = SQRT2;
+				}
+				nodes[nodeIndex].linkCost[linkIndex] = (maxD - nodes[nodeIndex].linkCost[linkIndex]) * length;
+			}
+		}
+	}
+}
+
 /************************ END OF TODO 1 ***************************/
 
 static int offsetToLinkIndex(int dx, int dy)

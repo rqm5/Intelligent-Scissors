@@ -74,9 +74,20 @@ void pixel_filter(double rsltPixel[3], int x, int y, const unsigned char* origIm
                   const double* kernel, int knlWidth, int knlHeight,
                   double scale, double offset)
 {
-printf("TODO: %s:%d\n", __FILE__, __LINE__); 
-
+	int colors = 3;
+	double result = 0.0000;
+	for (int color = 0; color < 3; ++color) {
+		for (int kernelX = 0; kernelX <= knlWidth; ++kernelX) {
+			int windowX = x - knlWidth/2 + kernelX;
+			for (int kernelY = 0; kernelY <= knlHeight; ++kernelY) {
+				int windowY = y - knlHeight/2 + kernelY;
+				if (0 <= windowX && windowX < imgWidth && 0 <= windowY && windowY < imgHeight) {
+					result += (kernel[kernelY*knlWidth+kernelX]) * (origImg[3*(windowY*imgWidth+windowX)+color]);
+				}
+			}
+		}
+		rsltPixel[color] = result/scale + offset;
+	}
 }
 
 /************************ END OF TODO 3 **************************/
-

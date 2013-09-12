@@ -1,32 +1,32 @@
-﻿Build started 9/7/2013 4:22:17 PM.
+﻿Build started 9/9/2013 7:08:27 PM.
      1>Project "C:\Users\Kevin Lee\Desktop\Intelligent-Scissors\iScissor.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I. /ZI /nologo /W3 /WX- /MP /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo".\Debug/" /Fd".\Debug/vc110.pdb" /Gd /TP /analyze- /errorReport:prompt /wd4996 src\BrushConfigUI.cpp src\correlation.cpp src\FltDesignUI.cpp src\HelpPageUI.cpp src\ImgFilterUI.cpp src\ImgFltAux.cpp src\ImgFltMain.cpp src\ImgView.cpp src\iScissor.cpp src\ScissorPanelUI.cpp src\ImageLib\FileIO.cpp src\ImageLib\Image.cpp src\ImageLib\RefCntMem.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I. /ZI /nologo /W3 /WX- /MP /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo".\Debug/" /Fd".\Debug/vc110.pdb" /Gd /TP /analyze- /errorReport:prompt /wd4996 src\BrushConfigUI.cpp src\FltDesignUI.cpp src\ImgFilterUI.cpp src\ImgFltMain.cpp src\ImgView.cpp src\ScissorPanelUI.cpp src\correlation.cpp src\iScissor.cpp
          BrushConfigUI.cpp
-         correlation.cpp
          FltDesignUI.cpp
-         HelpPageUI.cpp
-     1>c1xx : fatal error C1083: Cannot open source file: 'src\BrushConfigUI.cpp': No such file or directory
-     1>c1xx : fatal error C1083: Cannot open source file: 'src\HelpPageUI.cpp': No such file or directory
-     1>c1xx : fatal error C1083: Cannot open source file: 'src\FltDesignUI.cpp': No such file or directory
-     1>c1xx : fatal error C1083: Cannot open source file: 'src\correlation.cpp': No such file or directory
          ImgFilterUI.cpp
-         ImgFltAux.cpp
          ImgFltMain.cpp
          ImgView.cpp
-     1>c1xx : fatal error C1083: Cannot open source file: 'src\ImgView.cpp': No such file or directory
-     1>c1xx : fatal error C1083: Cannot open source file: 'src\ImgFltMain.cpp': No such file or directory
-         iScissor.cpp
          ScissorPanelUI.cpp
-     1>c1xx : fatal error C1083: Cannot open source file: 'src\ImgFilterUI.cpp': No such file or directory
-     1>c1xx : fatal error C1083: Cannot open source file: 'src\ImgFltAux.cpp': No such file or directory
-         FileIO.cpp
-         Image.cpp
-     1>c1xx : fatal error C1083: Cannot open source file: 'src\ScissorPanelUI.cpp': No such file or directory
-     1>c1xx : fatal error C1083: Cannot open source file: 'src\iScissor.cpp': No such file or directory
-         RefCntMem.cpp
-     1>Done Building Project "C:\Users\Kevin Lee\Desktop\Intelligent-Scissors\iScissor.vcxproj" (Build target(s)) -- FAILED.
+         correlation.cpp
+         iScissor.cpp
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:".\Debug\iScissor.exe" /INCREMENTAL /NOLOGO /LIBPATH:winLibs fltk.lib fltkgl.lib fltkgld.lib fltkimagesd.lib comctl32.lib fltkd.lib odbc32.lib odbccp32.lib opengl32.lib glu32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /NODEFAULTLIB:libcd /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:".\Debug/iScissor.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\Debug\iScissor.lib" /MACHINE:X86 /SAFESEH /MACHINE:I386 .\Debug/BrushConfigUI.obj
+         .\Debug/correlation.obj
+         .\Debug/FltDesignUI.obj
+         .\Debug/HelpPageUI.obj
+         .\Debug/ImgFilterUI.obj
+         .\Debug/ImgFltAux.obj
+         .\Debug/ImgFltMain.obj
+         .\Debug/ImgView.obj
+         .\Debug/iScissor.obj
+         .\Debug/ScissorPanelUI.obj
+         .\Debug/FileIO.obj
+         .\Debug/Image.obj
+         .\Debug/RefCntMem.obj
+         iScissor.vcxproj -> C:\Users\Kevin Lee\Desktop\Intelligent-Scissors\.\Debug\iScissor.exe
+     1>Done Building Project "C:\Users\Kevin Lee\Desktop\Intelligent-Scissors\iScissor.vcxproj" (Build target(s)).
 
-Build FAILED.
+Build succeeded.
 
-Time Elapsed 00:00:02.96
+Time Elapsed 00:00:09.97
