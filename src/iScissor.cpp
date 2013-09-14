@@ -22,6 +22,12 @@ inline unsigned char PIXEL(const unsigned char* p, int i, int j, int c, int widt
     return *(p + 3 * (j * width + i) + c);
 }
 
+void assignCoordinates (Node* nodes, int imgWidth, int imgHeight);
+void computeDerivatives (Node* nodes, const unsigned char* img, int imgWidth, int imgHeight);
+double getMaxD (Node* nodes, int imgWidth, int imgHeight);
+void computeCost (Node* nodes, int imgWidth, int imgHeight, double maxD);
+void initNodeState(Node* nodes, int width, int height);
+
 /************************ TODO 1 ***************************
  *InitNodeBuf
  *	INPUT:
@@ -171,8 +177,57 @@ static int offsetToLinkIndex(int dx, int dy)
 
 void LiveWireDP(int seedX, int seedY, Node* nodes, int width, int height, const unsigned char* selection, int numExpanded)
 {
-printf("TODO: %s:%d\n", __FILE__, __LINE__); 
+	Node* seed = &NODE(nodes, seedX, seedY, width);
+	seed->prevNode = NULL;
+	seed->totalCost = 0;
 
+	if (selection != NULL && selection[seedY * width + seedX] == 0)
+		return; //Exit function if the seed isn't in the selection.
+
+	initNodeState(nodes, width, height);
+
+	CTypedPtrHeap<Node> pq;
+	pq.Insert(seed);
+
+	while (!pq.IsEmpty()) {
+		Node* minNode = pq.ExtractMin();
+		minNode->state = EXPANDED;
+
+		for (int linkIndex = 0; linkIndex < 8; ++linkIndex) {
+
+			int offsetX, offsetY;
+			minNode->nbrNodeOffset(offsetX, offsetY, linkIndex);
+
+			int neighborX = minNode->column + offsetX;
+			int neighborY = minNode->row + offsetY;
+
+			if ((0 <= neighborX && neighborX < width) && (0 <= neighborY && neighborY < height)) {
+				Node* neighborNode = &(NODE(nodes, neighborX, neighborY, width));
+
+				//Mildly convuoluted if statement to avoid NullPointerExceptions: statement will break 
+				//before trying to dereference selection if selection == NULL.
+				if (neighborNode->state != EXPANDED && !(selection != NULL && selection[neighborY * width + neighborX] != 1)) {
+					if (neighborNode->state == INITIAL) {
+						neighborNode->state = ACTIVE;
+
+						neighborNode->totalCost = minNode->totalCost + minNode->linkCost[linkIndex];
+						neighborNode->prevNode = minNode;
+						pq.Insert(neighborNode);
+					}
+					else {
+						double currentCost = minNode->totalCost + minNode->linkCost[linkIndex];
+
+						if (currentCost < neighborNode->totalCost) {
+							neighborNode->totalCost = currentCost;
+							neighborNode->prevNode = minNode;
+							pq.Update(neighborNode);
+						}
+					}
+				}
+			}
+		}
+	}
+	
 }
 /************************ END OF TODO 4 ***************************/
 
@@ -188,51 +243,17 @@ printf("TODO: %s:%d\n", __FILE__, __LINE__);
  *		And you want to insert a *pointer* to the Node into path, e.g.,
  *		insert nodes+j*width+i (or &(nodes[j*width+i])) if you want to insert node at (i,j), instead of nodes[nodes+j*width+i]!!!
  *		after the procedure, the seed should be the head of path and the input code should be the tail
+ *  NB PROF. SNAVELY:
+ *		If the seed is invalid (outside the selection), this will return a one-point path consisting of the input node.
  */
 
 void MinimumPath(CTypedPtrDblList <Node>* path, int freePtX, int freePtY, Node* nodes, int width, int height)
 {
-	CTypedPtrHeap<Node> pq;
-	initNodeState(nodes, width, height);
-	Node* seed = &(nodes[getSeedIndex(nodes, width, height)]);
-	(*seed).totalCost = 0;
-	pq.Insert(seed);
-	while (!pq.IsEmpty()) {
-		Node* minNode = pq.ExtractMin();
-		(*minNode).state = EXPANDED;
-		for (int linkIndex = 0; linkIndex < 8; ++linkIndex) {
-			int offsetX = 0;
-			int offsetY = 0;
-			(*minNode).nbrNodeOffset(offsetX, offsetY, linkIndex);
-			int neighborX = (*minNode).column + offsetX;
-			int neighborY = (*minNode).row + offsetY;
-			if (0 <= neighborX && neighborX < width && 0 <= neighborY && neighborY < height) {
-				int nodeIndex = neighborY * width + neighborX;
-				Node* neighborNode = &(nodes[nodeIndex]);
-				if ((*neighborNode).state != EXPANDED) {
-					if ((*neighborNode).state == INITIAL) {
-						(*neighborNode).state = ACTIVE;
-						(*neighborNode).totalCost = (*minNode).totalCost + (*minNode).linkCost[linkIndex];
-						(*neighborNode).prevNode = minNode;
-						pq.Insert(neighborNode);
-					}
-					else {
-						int currentCost = (*minNode).totalCost + (*minNode).linkCost[linkIndex];
-						if (currentCost < (*neighborNode).totalCost) {
-							(*neighborNode).totalCost = currentCost;
-							(*neighborNode).prevNode = minNode;
-							pq.Update(neighborNode);
-						}
-					}
-				}
-			}
-		}
-	}
 	int inputNodeIndex = freePtY * width + freePtX;
-	Node* currentNode = &(nodes[inputNodeIndex]);
+	Node* currentNode = &(NODE(nodes, freePtX, freePtY, width));
 	while (currentNode != NULL) {
-		(*path).AddHead(currentNode);
-		currentNode = (*currentNode).prevNode;
+		path->AddHead(currentNode);
+		currentNode = currentNode->prevNode;
 	}
 }
 
@@ -247,10 +268,9 @@ void MinimumPath(CTypedPtrDblList <Node>* path, int freePtX, int freePtY, Node* 
  */
 
 void initNodeState(Node* nodes, int width, int height) {
-	for (int x = 0; x < width; ++x) {
-		for (int y = 0; y < height; ++y) {
-			int nodeIndex = y*width+x;
-			nodes[nodeIndex].state = INITIAL;
+	for (int y = 0; y < height; ++y) {
+		for (int x = 0; x < width; ++x) {
+			NODE(nodes, x, y, width).state = INITIAL;
 		}
 	}
 }

@@ -1,4 +1,6 @@
 #include "correlation.h"
+#include <array>
+#include <iostream>
 
 /************************ TODO 2 **************************/
 /*
@@ -37,7 +39,16 @@ void image_filter(double* rsltImg, const unsigned char* origImg, const unsigned 
 {
 	double rsltpxl[3];
 
-	if (!selection) //If non-NULL, must check every pixel
+	for (int y = 0; y < knlHeight; y++) {
+		for (int x = 0; x < knlWidth; x++) {
+			std::cout << kernel[y * knlWidth + x] << "\t";
+		}
+		std::cout << "\n";
+	}
+	
+	std::cout << "\n";
+
+	if (selection != NULL) //If non-NULL, must check every pixel
 	{
 		for (int y = 0; y < imgHeight; y++) {
 			for (int x = 0; x < imgWidth; x++) {
@@ -110,7 +121,7 @@ void pixel_filter(double rsltPixel[3], int x, int y, const unsigned char* origIm
 			int windowX = x - knlWidth/2 + kernelX;
 			for (int kernelY = 0; kernelY <= knlHeight; ++kernelY) {
 				int windowY = y - knlHeight/2 + kernelY;
-				if (0 <= windowX && windowX < imgWidth && 0 <= windowY && windowY < imgHeight) {
+				if ((0 <= windowX && windowX < imgWidth) && (0 <= windowY && windowY < imgHeight)) {
 					result += (kernel[kernelY*knlWidth+kernelX]) * (origImg[3*(windowY*imgWidth+windowX)+color]);
 				}
 			}
