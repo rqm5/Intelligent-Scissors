@@ -6,6 +6,7 @@
 
 #include "correlation.h"
 #include "iScissor.h"
+#include "PriorityQueue.h"
 
 const double linkLengths[8] = { 1.0, SQRT2, 1.0, SQRT2, 1.0, SQRT2, 1.0, SQRT2 };
 
@@ -191,9 +192,91 @@ printf("TODO: %s:%d\n", __FILE__, __LINE__);
 
 void MinimumPath(CTypedPtrDblList <Node>* path, int freePtX, int freePtY, Node* nodes, int width, int height)
 {
-printf("TODO: %s:%d\n", __FILE__, __LINE__); 
-
+	CTypedPtrHeap<Node> pq;
+	initNodeState(nodes, width, height);
+	Node* seed = &(nodes[getSeedIndex(nodes, width, height)]);
+	(*seed).totalCost = 0;
+	pq.Insert(seed);
+	while (!pq.IsEmpty()) {
+		Node* minNode = pq.ExtractMin();
+		(*minNode).state = EXPANDED;
+		for (int linkIndex = 0; linkIndex < 8; ++linkIndex) {
+			int offsetX = 0;
+			int offsetY = 0;
+			(*minNode).nbrNodeOffset(offsetX, offsetY, linkIndex);
+			int neighborX = (*minNode).column + offsetX;
+			int neighborY = (*minNode).row + offsetY;
+			if (0 <= neighborX && neighborX < width && 0 <= neighborY && neighborY < height) {
+				int nodeIndex = neighborY * width + neighborX;
+				Node* neighborNode = &(nodes[nodeIndex]);
+				if ((*neighborNode).state != EXPANDED) {
+					if ((*neighborNode).state == INITIAL) {
+						(*neighborNode).state = ACTIVE;
+						(*neighborNode).totalCost = (*minNode).totalCost + (*minNode).linkCost[linkIndex];
+						(*neighborNode).prevNode = minNode;
+						pq.Insert(neighborNode);
+					}
+					else {
+						int currentCost = (*minNode).totalCost + (*minNode).linkCost[linkIndex];
+						if (currentCost < (*neighborNode).totalCost) {
+							(*neighborNode).totalCost = currentCost;
+							(*neighborNode).prevNode = minNode;
+							pq.Update(neighborNode);
+						}
+					}
+				}
+			}
+		}
+	}
+	int inputNodeIndex = freePtY * width + freePtX;
+	Node* currentNode = &(nodes[inputNodeIndex]);
+	while (currentNode != NULL) {
+		(*path).AddHead(currentNode);
+		currentNode = (*currentNode).prevNode;
+	}
 }
+
+
+/*
+ *initNodeState
+ *	INPUT:
+ *		nodes:	a allocated buffer of Nodes of the same size, one node corresponds to a pixel in img. the linkCosts in
+ *		        each of the nodes is the magnitude of the derivative in each of the 8 directions at that pixel.
+ *  OUPUT:
+ *      returns the buffer of Nodes with the states of the Nodes set to INITIAL.
+ */
+
+void initNodeState(Node* nodes, int width, int height) {
+	for (int x = 0; x < width; ++x) {
+		for (int y = 0; y < height; ++y) {
+			int nodeIndex = y*width+x;
+			nodes[nodeIndex].state = INITIAL;
+		}
+	}
+}
+
+
+/*
+ *getSeedIndex
+ *	INPUT:
+ *		nodes:	a allocated buffer of Nodes of the same size, one node corresponds to a pixel in img. the linkCosts in
+ *		        each of the nodes is the magnitude of the derivative in each of the 8 directions at that pixel.
+ *  OUPUT:
+ *      returns the index of the seed Node. if none are found, returns -1.
+ */
+
+int getSeedIndex(Node* nodes, int width, int height) {
+	for (int x = 0; x < width; ++x) {
+		for (int y = 0; y < height; ++y) {
+			int nodeIndex = y*width+x;
+			if (nodes[nodeIndex].prevNode == NULL) {
+				return nodeIndex;
+			}
+		}
+	}
+	return -1;
+}
+
 /************************ END OF TODO 5 ***************************/
 
 /************************ An Extra Credit Item ***************************
