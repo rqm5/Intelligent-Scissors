@@ -80,7 +80,7 @@ void assignCoordinates (Node* nodes, int imgWidth, int imgHeight) {
 void computeDerivatives (Node* nodes, const unsigned char* img, int imgWidth, int imgHeight) {
 	int kernelWidth = 3;
 	int kernelHeight = 3;
-	double scale = 0.0000;
+	double scale = 1.0000;
 	double offset = 0.0000;
 	const unsigned char* selection = NULL;
 	for (int linkIndex = 0; linkIndex < 8; ++linkIndex) {

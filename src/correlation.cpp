@@ -39,15 +39,6 @@ void image_filter(double* rsltImg, const unsigned char* origImg, const unsigned 
 {
 	double rsltpxl[3];
 
-	for (int y = 0; y < knlHeight; y++) {
-		for (int x = 0; x < knlWidth; x++) {
-			std::cout << kernel[y * knlWidth + x] << "\t";
-		}
-		std::cout << "\n";
-	}
-	
-	std::cout << "\n";
-
 	if (selection != NULL) //If non-NULL, must check every pixel
 	{
 		for (int y = 0; y < imgHeight; y++) {
@@ -115,11 +106,11 @@ void pixel_filter(double rsltPixel[3], int x, int y, const unsigned char* origIm
 				  double scale, double offset)
 {
 	int colors = 3;
-	double result = 0.0000;
 	for (int color = 0; color < 3; ++color) {
-		for (int kernelX = 0; kernelX <= knlWidth; ++kernelX) {
+		double result = 0.0000;
+		for (int kernelX = 0; kernelX < knlWidth; ++kernelX) {
 			int windowX = x - knlWidth/2 + kernelX;
-			for (int kernelY = 0; kernelY <= knlHeight; ++kernelY) {
+			for (int kernelY = 0; kernelY < knlHeight; ++kernelY) {
 				int windowY = y - knlHeight/2 + kernelY;
 				if ((0 <= windowX && windowX < imgWidth) && (0 <= windowY && windowY < imgHeight)) {
 					result += (kernel[kernelY*knlWidth+kernelX]) * (origImg[3*(windowY*imgWidth+windowX)+color]);

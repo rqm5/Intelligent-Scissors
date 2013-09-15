@@ -1,5 +1,5 @@
-﻿Build started 9/14/2013 6:32:01 PM.
-     1>Project "C:\Users\Robert Q. Maxton\Documents\Cornell\2Sophomore\2013F\CS4670\IntelligentScissors\iScissor.vcxproj" on node 2 (Build target(s)).
+﻿Build started 9/14/2013 8:00:18 PM.
+     1>Project "C:\Users\Kevin Lee\Desktop\Intelligent-Scissors\iScissor.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I. /ZI /nologo /W3 /WX- /MP /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo".\Debug/" /Fd".\Debug/vc110.pdb" /Gd /TP /analyze- /errorReport:prompt /wd4996 src\correlation.cpp
          correlation.cpp
@@ -17,9 +17,9 @@
          .\Debug/FileIO.obj
          .\Debug/Image.obj
          .\Debug/RefCntMem.obj
-         iScissor.vcxproj -> C:\Users\Robert Q. Maxton\Documents\Cornell\2Sophomore\2013F\CS4670\IntelligentScissors\.\Debug\iScissor.exe
-     1>Done Building Project "C:\Users\Robert Q. Maxton\Documents\Cornell\2Sophomore\2013F\CS4670\IntelligentScissors\iScissor.vcxproj" (Build target(s)).
+         iScissor.vcxproj -> C:\Users\Kevin Lee\Desktop\Intelligent-Scissors\.\Debug\iScissor.exe
+     1>Done Building Project "C:\Users\Kevin Lee\Desktop\Intelligent-Scissors\iScissor.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:03.11
+Time Elapsed 00:00:03.54
